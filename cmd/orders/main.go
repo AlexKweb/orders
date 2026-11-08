@@ -12,6 +12,8 @@ import (
 	"github.com/gulmix/orders/internal"
 	"github.com/gulmix/orders/internal/config"
 	healthController "github.com/gulmix/orders/internal/controllers/http/health"
+	orderController "github.com/gulmix/orders/internal/controllers/http/order"
+
 	httpServer "github.com/gulmix/orders/internal/servers/http"
 )
 
@@ -37,8 +39,11 @@ func run() error {
 	// вверх — хранилище в сервис, сервис в контроллер, контроллер в маршруты.
 	// Никаких глобальных переменных и пакетов-синглтонов.
 	health := healthController.NewController()
+	order := orderController.NewController()
 
-	srv := httpServer.NewServer(cfg.HTTPAddr, internal.InitRoutes(logger, health), logger, cfg.ShutdownTimeout)
+	srv := httpServer.NewServer(cfg.HTTPAddr, internal.InitRoutes(logger, health, order), logger, cfg.ShutdownTimeout)
 
 	return srv.Run()
 }
+
+// - сборка зависимостей
